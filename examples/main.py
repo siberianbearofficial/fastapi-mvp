@@ -3,9 +3,9 @@ from uuid import UUID
 import uvicorn
 from fastapi import FastAPI, HTTPException
 
+import fastapi_mvp
 from examples.data.models import User
 from examples.data.settings import get_metrics_settings, get_mongo_settings
-from src import fastapi_mvp
 
 
 def create_app() -> FastAPI:

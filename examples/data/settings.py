@@ -1,5 +1,5 @@
-from src.core.metrics import MetricsSettings
-from src.core.storage.mongo_storage import MongoSettings
+from fastapi_mvp.metrics import MetricsSettings
+from fastapi_mvp.storage.mongo_storage import MongoSettings
 
 
 def get_mongo_settings() -> MongoSettings:

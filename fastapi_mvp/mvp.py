@@ -4,8 +4,8 @@ from typing import Annotated, Optional
 
 from fastapi import Depends, FastAPI
 
-from src.core.metrics import MetricsSettings, instrument_app
-from src.core.storage.mongo_storage import (
+from fastapi_mvp.metrics import MetricsSettings, instrument_app
+from fastapi_mvp.storage.mongo_storage import (
     MongoSettings,
     MongoStorage,
     get_mongo_storage,

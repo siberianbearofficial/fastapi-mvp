@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from prometheus_fastapi_instrumentator import Instrumentator
 
-from src.core.metrics.settings import MetricsSettings
+from fastapi_mvp.metrics.settings import MetricsSettings
 
 
 def instrument_app(app: FastAPI, metrics_settings: MetricsSettings) -> None:

@@ -3,8 +3,8 @@ from typing import Optional, Type
 
 from pydantic import BaseModel
 
-from src.core.storage.mongo_storage.manager import MongoDBManager, get_manager
-from src.core.storage.mongo_storage.settings import MongoSettings
+from fastapi_mvp.storage.mongo_storage.manager import MongoDBManager, get_manager
+from fastapi_mvp.storage.mongo_storage.settings import MongoSettings
 
 
 class MongoStorage:
