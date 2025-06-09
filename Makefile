@@ -15,11 +15,20 @@ help: ## Show this help
 test: ## Runs pytest
 	$(POETRY_RUN) $(TEST)
 
-.PHONY: lint
-lint: ## Lint code
+.PHONY: ruff-lint
+ruff-lint: ## Lint code with ruff
 	$(POETRY_RUN) ruff check $(CODE)
+
+.PHONY: pylint
+pylint: ## Lint code with pylint
 	$(POETRY_RUN) pylint --jobs 1 --rcfile=pyproject.toml $(CODE)
+
+.PHONY: mypy
+mypy: ## Lint code with mypy
 	$(POETRY_RUN) mypy $(CODE)
+
+.PHONY: lint
+lint: ruff-lint pylint mypy ## Lint code
 	$(POETRY_RUN) pytest --dead-fixtures --dup-fixtures
 
 .PHONY: format
