@@ -1,7 +1,10 @@
-[tool.poetry]
+[project]
 name = "fastapi-mvp"
 version = "0.1.0"
 description = "Create FastAPI MVP in 5-10 minutes"
+requires-python = ">=3.12"
+
+[tool.poetry]
 authors = ["siberianbearofficial"]
 license = "MIT"
 readme = "README.md"
