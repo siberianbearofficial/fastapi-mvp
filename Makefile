@@ -36,3 +36,11 @@ install: ## Install dependencies
 .PHONY: lock
 lock: ## Lock dependencies
 	poetry lock
+
+.PHONY: build
+build: ## Build wheels
+	poetry build
+
+.PHONY: publish
+publish:
+	poetry publish --build --username=$(PYPI_USERNAME) --password=$(PYPI_PASSWORD)

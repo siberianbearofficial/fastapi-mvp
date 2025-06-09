@@ -5,7 +5,7 @@ description = "Create FastAPI MVP in 5-10 minutes"
 authors = ["siberianbearofficial"]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "fastapi-mvp", from = "src" }]
+packages = [{ include = "fastapi_mvp", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "~3.12"
