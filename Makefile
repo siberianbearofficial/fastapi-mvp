@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 POETRY_RUN = poetry run
 TEST = pytest $(arg)
-CODE = fastapi-mvp tests examples
+CODE = src tests examples
 
 COVERAGE_REPORT = htmlcov/status.json
 COBERTURA_REPORT = cobertura.xml
