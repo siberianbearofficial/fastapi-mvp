@@ -10,7 +10,7 @@ from motor.motor_asyncio import (
 )
 
 if TYPE_CHECKING:
-    from src.core.storage.mongo_storage.settings import MongoSettings
+    from fastapi_mvp.storage.mongo_storage.settings import MongoSettings
 
 
 DocumentType = dict[str, str]

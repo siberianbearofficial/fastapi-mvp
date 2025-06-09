@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-mvp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Create FastAPI MVP in 5-10 minutes"
 requires-python = ">=3.12"
 
@@ -8,7 +8,7 @@ requires-python = ">=3.12"
 authors = ["siberianbearofficial"]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "fastapi_mvp", from = "src" }]
+packages = [{ include = "fastapi_mvp" }]
 
 [tool.poetry.dependencies]
 python = "~3.12"

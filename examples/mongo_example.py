@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException
 
 from examples.data.models import User, UserCreate
 from examples.data.settings import get_mongo_settings
-from src.core.storage.mongo_storage.storage import get_mongo_storage
+from fastapi_mvp.storage.mongo_storage import get_mongo_storage
 
 
 def fastapi_example() -> None:

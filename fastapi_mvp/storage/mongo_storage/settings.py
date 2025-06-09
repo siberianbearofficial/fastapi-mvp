@@ -1,4 +1,4 @@
-from src.core.settings import Settings
+from fastapi_mvp.settings import Settings
 
 
 class MongoSettings(Settings):
