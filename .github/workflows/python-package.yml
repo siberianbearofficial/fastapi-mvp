@@ -29,5 +29,5 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: make publish
       env:
-        PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        PYPI_USERNAME: '__token__'
         PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
