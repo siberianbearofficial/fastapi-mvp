@@ -42,5 +42,5 @@ build: ## Build wheels
 	poetry build
 
 .PHONY: publish
-publish:
+publish: ## Publish to PyPi
 	poetry publish --build --username=$(PYPI_USERNAME) --password=$(PYPI_PASSWORD)
