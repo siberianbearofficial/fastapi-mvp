@@ -27,6 +27,7 @@ class S3Storage:
                 aws_access_key_id=self._settings.aws_access_key_id,
                 aws_secret_access_key=self._settings.aws_secret_access_key,
                 endpoint_url=self._endpoint_url,
+                region_name=self._settings.region,
             ) as client:
                 self._client = client
         return self._client

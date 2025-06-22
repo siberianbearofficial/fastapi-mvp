@@ -18,6 +18,7 @@ def get_s3_settings() -> S3Settings:
         bucket="test",
         host="localhost",
         protocol="http",
+        region="ru-central-1",
         aws_access_key_id="test",
         aws_secret_access_key="test",  # noqa
     )

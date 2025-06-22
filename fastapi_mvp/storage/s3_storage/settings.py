@@ -16,5 +16,6 @@ class S3Settings(Settings):
     bucket: str
     host: str
     protocol: str
+    region: str
     aws_access_key_id: str
     aws_secret_access_key: str
