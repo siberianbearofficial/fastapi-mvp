@@ -1,5 +1,6 @@
 from fastapi_mvp.metrics import MetricsSettings
 from fastapi_mvp.storage.mongo_storage import MongoSettings
+from fastapi_mvp.storage.s3_storage import S3Settings
 
 
 def get_mongo_settings() -> MongoSettings:
@@ -9,6 +10,16 @@ def get_mongo_settings() -> MongoSettings:
         password="mongo",  # noqa
         host="localhost",
         port=27017,
+    )
+
+
+def get_s3_settings() -> S3Settings:
+    return S3Settings(
+        bucket="test",
+        host="localhost",
+        protocol="http",
+        aws_access_key_id="test",
+        aws_secret_access_key="test",  # noqa
     )
 
 
