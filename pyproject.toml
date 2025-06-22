@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-mvp"
-version = "0.2.0"
+version = "0.2.1"
 description = "Create FastAPI MVP in 5-10 minutes"
 requires-python = ">=3.12"
 
