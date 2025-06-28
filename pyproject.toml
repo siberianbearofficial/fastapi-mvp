@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-mvp"
-version = "0.1.1"
+version = "0.2.2"
 description = "Create FastAPI MVP in 5-10 minutes"
 requires-python = ">=3.12"
 
@@ -84,7 +84,6 @@ lint.select = [
     "C90",
     "I",
     "N",
-    "D",
     "YTT",
     "S",
     "BLE",
@@ -118,16 +117,6 @@ lint.select = [
     "RUF",
 ]
 lint.ignore = [
-    "D100",
-    "D101",
-    "D102",
-    "D103",
-    "D104",
-    "D105",
-    "D106",
-    "D107",
-    "D203",
-    "D213",
     "S101",
     "S311",
     "TRY003",
