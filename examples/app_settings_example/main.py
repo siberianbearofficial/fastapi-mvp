@@ -1,7 +1,6 @@
-from fastapi import FastAPI
 from pydantic_settings import SettingsConfigDict
 
-from fastapi_mvp import Mvp
+from fastapi_mvp import FastAPIMvp
 from fastapi_mvp.settings import AppSettings
 
 
@@ -12,7 +11,7 @@ class MyAppSettings(AppSettings):
 
 async def main() -> None:
     try:
-        await Mvp.setup(FastAPI())
+        FastAPIMvp()
     except RuntimeError as e:
         msg = (
             "If you had set the 'something' field value, "

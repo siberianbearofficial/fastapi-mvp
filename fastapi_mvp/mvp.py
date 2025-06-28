@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Annotated, Optional
+from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING, Annotated, Any, AsyncGenerator, Optional
 
-from dotenv import load_dotenv
 from fastapi import Depends, FastAPI
 
 from fastapi_mvp.metrics import MetricsSettings, instrument_app
@@ -19,88 +18,101 @@ from fastapi_mvp.storage.s3_storage import (
     get_s3_storage,
 )
 
+if TYPE_CHECKING:
+    from fastapi_mvp.settings.env_settings import LoadEnvSettings
 
-class Mvp:
-    __instance__: Optional[Mvp] = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPIMvp) -> AsyncGenerator[None, None]:
+    await app.initialize()
+    yield
+
+
+def merge_lifespans(provided_lifespan: Optional[Any]) -> Any:
+    if provided_lifespan is not None:
+        err = "Providing custom lifespan is not supported yet"
+        raise RuntimeError(err)
+
+    return lifespan
+
+
+class FastAPIMvp(FastAPI):
+    __instance__: Optional[FastAPIMvp] = None
+    __env_ready__: bool = False
 
     def __init__(
         self,
-        fastapi_app: FastAPI,
-        mongo_storage: Optional[MongoStorage] = None,
-        s3_storage: Optional[S3Storage] = None,
+        mongo: Optional[MongoSettings] = None,
+        s3: Optional[S3Settings] = None,
+        metrics: Optional[MetricsSettings] = None,
+        **kwargs: Any,
     ) -> None:
-        self.__fastapi_app = fastapi_app  # pylint: disable=unused-private-member
-        self.__mongo_storage = mongo_storage
-        self.__s3_storage = s3_storage
+        if FastAPIMvp.__instance__ is not None:
+            err = "You can not create several FastAPIMvp instances, it is singleton"
+            raise RuntimeError(err)
+
+        FastAPIMvp.prepare_env()
+        merged = merge_lifespans(kwargs.pop("lifespan", None))
+        super().__init__(**kwargs, lifespan=merged)
+
+        if metrics:
+            instrument_app(self, metrics)
+
+        self.__mongo_settings = mongo
+        self.__s3_settings = s3
+
+        self.__mongo_storage: Optional[MongoStorage] = None
+        self.__s3_storage: Optional[S3Storage] = None
+
+        FastAPIMvp.__instance__ = self
 
     def mongo(self) -> MongoStorage:
         if self.__mongo_storage is None:
-            err = "Provide mongo settings to Mvp.setup() to use MongoDB."
+            err = "Provide mongo settings in constructor to use MongoDB."
             raise RuntimeError(err)
 
         return self.__mongo_storage
 
     def s3(self) -> S3Storage:
         if self.__s3_storage is None:
-            err = "Provide s3 settings to Mvp.setup() to use S3 Object Storage."
+            err = "Provide s3 settings in constructor to use S3 Object Storage."
             raise RuntimeError(err)
 
         return self.__s3_storage
 
+    async def initialize(self) -> None:
+        if self.__mongo_settings:
+            self.__mongo_storage = get_mongo_storage(self.__mongo_settings)
+        if self.__s3_settings:
+            self.__s3_storage = get_s3_storage(self.__s3_settings)
+
     @classmethod
-    async def setup(
-        cls,
-        app: FastAPI,
-        mongo: Optional[MongoSettings] = None,
-        s3: Optional[S3Settings] = None,
-        metrics: Optional[MetricsSettings] = None,
-    ) -> None:
+    def prepare_env(cls, env: Optional[LoadEnvSettings] = None) -> None:
+        if cls.__env_ready__ is True:
+            return
+        if env is not None:
+            env.load()
         AppSettings.load_and_validate()
+        cls.__env_ready__ = True
 
-        mongo_storage = get_mongo_storage(mongo) if mongo else None
-        s3_storage = get_s3_storage(s3) if s3 else None
-
-        if metrics:
-            instrument_app(app, metrics)
-
-        cls.__instance__ = cls(
-            fastapi_app=app,
-            mongo_storage=mongo_storage,
-            s3_storage=s3_storage,
-        )
-
-    @staticmethod
-    async def load_env(
-        env: str,
-        envs_dir: Optional[Path] = None,
-        secrets: Optional[Path] = None,
-    ) -> None:
-        """
-        Load environment variables from .env file.
-        Secrets are read from another file if it exists.
-        Values from secrets override values from .env file but not from the system.
-        :param env: Current environment to be used as .env file name.
-        :param envs_dir: Path to env files directory,
-                         "envs" by default if none is specified.
-        :param secrets: Path to env file with application secrets,
-                        "envs/secrets.env" by default if none is specified.
-        :return:
-        """
-        if envs_dir is None:
-            envs_dir = Path("envs")
-        if secrets is None:
-            secrets = envs_dir / "secrets.env"
-
-        if secrets.exists():
-            load_dotenv(secrets)
-        load_dotenv(envs_dir / f"{env}.env")
+    @classmethod
+    def instance(cls) -> FastAPIMvp:
+        if cls.__instance__ is None:
+            err = (
+                "FastAPIMvp is not initialized, consider "
+                "creating an instance before calling this method"
+            )
+            raise RuntimeError(err)
+        return cls.__instance__
 
 
-def get_mvp() -> Mvp:
-    if Mvp.__instance__ is None:
-        err = "MVP is not set up, call Mvp.setup() after FastAPI app is initialized."
-        raise RuntimeError(err)
-    return Mvp.__instance__
+def get_mongo() -> MongoStorage:
+    return FastAPIMvp.instance().mongo()
 
 
-MvpDep = Annotated[Mvp, Depends(get_mvp)]
+def get_s3() -> S3Storage:
+    return FastAPIMvp.instance().s3()
+
+
+MongoDep = Annotated[MongoStorage, Depends(get_mongo)]
+S3Dep = Annotated[S3Storage, Depends(get_s3)]

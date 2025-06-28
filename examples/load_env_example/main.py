@@ -2,7 +2,8 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from fastapi_mvp import Mvp
+from fastapi_mvp import FastAPIMvp
+from fastapi_mvp.settings import LoadEnvSettings
 
 
 class InterestingSettings(BaseSettings):
@@ -12,8 +13,13 @@ class InterestingSettings(BaseSettings):
     second: str
 
 
-async def main() -> None:
-    await Mvp.load_env("example", envs_dir=Path(__file__).parent)
+def main() -> None:
+    FastAPIMvp.prepare_env(
+        LoadEnvSettings(
+            env="example",
+            envs_dir=Path(__file__).parent,
+        ),
+    )
 
     settings = InterestingSettings()
     print(settings.first)  # noqa
@@ -21,6 +27,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    import asyncio
-
-    asyncio.run(main())
+    main()
