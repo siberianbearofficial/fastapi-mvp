@@ -2,31 +2,29 @@ import asyncio
 from uuid import UUID, uuid4
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 
 from examples.data.models import User, UserCreate
 from examples.data.settings import get_mongo_settings
+from fastapi_mvp import FastAPIMvp, MongoDep
 from fastapi_mvp.storage.mongo_storage import get_mongo_storage
 
 
 def fastapi_example() -> None:
-    app = FastAPI()
-    settings = get_mongo_settings()
+    app = FastAPIMvp(mongo=get_mongo_settings())
 
     @app.post("/users")
-    async def add_user(user_create: UserCreate) -> User:
-        storage = get_mongo_storage(settings)
+    async def add_user(user_create: UserCreate, mongo: MongoDep) -> User:
         user = User(
             id=uuid4(),
             login=user_create.login,
             password=user_create.password,
         )
-        return await storage.save(str(user.id), user)
+        return await mongo.save(str(user.id), user)
 
     @app.get("/users/{user_id}")
-    async def get_user(user_id: UUID) -> User:
-        storage = get_mongo_storage(settings)
-        user = await storage.load(str(user_id), User)
+    async def get_user(user_id: UUID, mongo: MongoDep) -> User:
+        user = await mongo.load(str(user_id), User)
         if not user:
             raise HTTPException(status_code=404, detail="User not found.")
 

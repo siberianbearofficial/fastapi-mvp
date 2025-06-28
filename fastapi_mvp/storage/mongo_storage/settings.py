@@ -1,7 +1,18 @@
+from pydantic_settings import SettingsConfigDict
+
 from fastapi_mvp.settings import Settings
 
 
 class MongoSettings(Settings):
+    """
+    Settings that are used to configure Mongo Storage.
+    You can provide values explicitly or via env vars prefixed with 'MONGO__'.
+    """
+
+    model_config = SettingsConfigDict(
+        env_prefix="MONGO__",
+    )
+
     name: str
     user: str
     password: str

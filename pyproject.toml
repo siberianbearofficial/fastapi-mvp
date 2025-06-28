@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-mvp"
-version = "0.2.2"
+version = "0.4.0"
 description = "Create FastAPI MVP in 5-10 minutes"
 requires-python = ">=3.12"
 
@@ -24,6 +24,7 @@ aiobotocore = "2.17.0"
 aiocache = "^0.12.3"
 aiofiles = "^24.1.0"
 motor = "^3.7.1"
+python-dotenv = "^1.1.1"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.15.0"
